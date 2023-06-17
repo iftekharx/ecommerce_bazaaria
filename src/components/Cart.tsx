@@ -59,6 +59,11 @@ const Cart = () => {
                 </TableCell>
                 <TableCell align="center">
                   <Typography variant="h5" fontWeight={'bold'}>
+                    Image
+                  </Typography>
+                </TableCell>
+                <TableCell align="center">
+                  <Typography variant="h5" fontWeight={'bold'}>
                     Name
                   </Typography>
                 </TableCell>
@@ -106,6 +111,14 @@ const Cart = () => {
                     >
                       {product.id}
                     </Typography>
+                  </TableCell>
+                  <TableCell align="center">
+                    <img
+                      width="20%"
+                      height="20%"
+                      src={product.images[0]}
+                      alt={product.title}
+                    />
                   </TableCell>
                   <TableCell align="center">
                     <Typography variant="h6">{product.title}</Typography>

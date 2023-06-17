@@ -10,6 +10,8 @@ import { useAppDispatch, useAppSelector } from './hooks/hooks'
 import Box from '@mui/material/Box'
 import { Typography } from '@mui/material'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
+import Button from '@mui/material/Button'
+import { removeProduct } from '../features/cart/cartSlice'
 
 const Cart = () => {
   const dispatch = useAppDispatch()
@@ -18,6 +20,10 @@ const Cart = () => {
   const totalQuantity = useAppSelector((state) => state.cart.totalQuantity)
 
   const theme = createTheme()
+
+  const removeProductFromCart = (id: number) => {
+    dispatch(removeProduct({ id: id }))
+  }
 
   theme.typography.h6 = {
     fontSize: '1.2rem',
@@ -64,7 +70,7 @@ const Cart = () => {
 
                 <TableCell align="center">
                   <Typography variant="h5" fontWeight={'bold'}>
-                    Price
+                    Unit Price
                   </Typography>
                 </TableCell>
                 <TableCell align="center">
@@ -83,7 +89,21 @@ const Cart = () => {
               {products.map((product, index) => (
                 <TableRow key={index}>
                   <TableCell align="center">
-                    <Typography variant="h6" sx={{}}>
+                    <Button onClick={() => removeProductFromCart(product.id)}>
+                      <Typography
+                        variant="h5"
+                        color="red"
+                        fontWeight={'bold'}
+                        sx={{ display: 'inline' }}
+                      >
+                        X
+                      </Typography>
+                    </Button>
+                    <Typography
+                      variant="h5"
+                      sx={{ display: 'inline' }}
+                      fontWeight={'bold'}
+                    >
                       {product.id}
                     </Typography>
                   </TableCell>

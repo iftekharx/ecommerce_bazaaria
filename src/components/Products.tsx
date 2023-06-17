@@ -86,11 +86,9 @@ const Products = () => {
                   }}
                   aria-label="Add to cart"
                 >
-                  <AddIcon />
+                  <AddIcon color="success" />
                 </IconButton>
-                <IconButton aria-label="Remove From Cart">
-                  <RemoveIcon />
-                </IconButton>
+
                 <Button>View Details</Button>
               </CardActions>
             </Card>

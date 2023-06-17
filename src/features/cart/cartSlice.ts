@@ -7,6 +7,7 @@ const initialState = {
   products: [] as Product[],
   totalQuantity: 0,
   discountedTotal: 0,
+  currentProductId: 0,
   totalPrice: 0,
 }
 
@@ -18,6 +19,15 @@ const cartSlice = createSlice({
       state.products = []
     },
 
+    removeProduct: (state, action) => {
+      state.products = state.products.filter((product) => {
+        return product.id !== action.payload.id
+      })
+      console.log(action.payload.id)
+      state.currentProductId = action.payload.id
+      cartSlice.caseReducers.calculateTotals(state)
+    },
+
     calculateTotals: (state) => {
       let c = 0
       let totalQ = 0
@@ -25,7 +35,7 @@ const cartSlice = createSlice({
       state.products.map((product) => {
         totalQ += product.quantity
         totalPrice +=
-          product.price -
+          product.price * product.quantity -
           product.quantity * product.price * (product.discountPercentage / 100)
       })
 
@@ -65,6 +75,7 @@ const cartSlice = createSlice({
 })
 
 // console.log(cartSlice);
-export const { clearProducts, calculateTotals, addProduct } = cartSlice.actions
+export const { clearProducts, removeProduct, calculateTotals, addProduct } =
+  cartSlice.actions
 
 export default cartSlice.reducer

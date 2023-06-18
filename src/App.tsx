@@ -8,6 +8,7 @@ import { useEffect } from 'react'
 import { getProducts } from './features/product/productSlice'
 import { useAppDispatch, useAppSelector } from './components/hooks/hooks'
 import Cart from './components/Cart'
+import Categories from './components/Categories'
 
 function App() {
   const dispatch = useAppDispatch()
@@ -26,6 +27,7 @@ function App() {
           <Route path="/" element={<Products />} />
 
           <Route path="/cart" element={<Cart />} />
+          <Route path="/categories" element={<Categories />} />
 
           <Route path="/latest" element={<LatestProducts />} />
         </Routes>

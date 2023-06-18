@@ -12,6 +12,10 @@ const initialState = {
   skip: 0,
   limit: 100,
   isLoading: true,
+  filterProducts: [] as Product[],
+  category: '',
+  categories: [] as string[],
+  searchString: '',
 }
 
 export const getProducts = createAsyncThunk(
@@ -45,6 +49,33 @@ const productSlice = createSlice({
       state.currentProduct = product
     },
 
+    setSearchString: (state, action) => {
+      state.searchString = action.payload
+    },
+
+    setMainCategory: (state, action) => {
+      state.category = action.payload
+    },
+
+    loadCategories: (state) => {
+      let categories = new Set<String>()
+      state.products.map((product) => {
+        categories.add(product.category)
+      })
+
+      state.categories = Array.from(categories.values()) as string[]
+    },
+
+    filterProducts: (state) => {
+      const searchString = state.searchString
+
+      state.filterProducts = state.products
+      state.filterProducts = state.products.filter(
+        (product) =>
+          product.title.toLowerCase().indexOf(searchString.toLowerCase()) !== -1
+      )
+    },
+
     calculateTotals: (state) => {
       let total = 0
       state.products.forEach((item) => {
@@ -62,6 +93,7 @@ const productSlice = createSlice({
         // console.log(action);
         state.isLoading = false
         state.products = action.payload
+        productSlice.caseReducers.filterProducts(state)
       })
       .addCase(getProducts.rejected, (state, action) => {
         state.isLoading = false
@@ -70,6 +102,13 @@ const productSlice = createSlice({
 })
 
 // console.log(cartSlice);
-export const {} = productSlice.actions
+export const {
+  clearProducts,
+  calculateTotals,
+  filterProducts,
+  loadCategories,
+  setSearchString,
+  setMainCategory,
+} = productSlice.actions
 
 export default productSlice.reducer

@@ -26,6 +26,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 const Products = () => {
   const dispatch = useAppDispatch()
   const products = useAppSelector((state) => state.product.products)
+  const filteredProd = useAppSelector((state) => state.product.filterProducts)
   const isLoading = useAppSelector((state) => state.product.isLoading)
 
   const addProductToCart = (product: Product) => {
@@ -35,7 +36,7 @@ const Products = () => {
   return !isLoading ? (
     <div>
       <Grid container padding={10} spacing={10}>
-        {products.map((product, index) => (
+        {filteredProd.map((product, index) => (
           <Grid key={index} item xs={12} sm={6} md={4}>
             <Card
               sx={{

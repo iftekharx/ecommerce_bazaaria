@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useRef } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -21,6 +22,11 @@ import { useAppDispatch, useAppSelector } from './hooks/hooks'
 import Badge from '@mui/material/Badge'
 import MailIcon from '@mui/icons-material/Mail'
 import { Link } from 'react-router-dom'
+import { filterProducts } from '../features/product/productSlice'
+import { setSearchString } from '../features/product/productSlice'
+import { text } from 'stream/consumers'
+import { loadLocalStorage } from '../features/cart/cartSlice'
+
 const Navbar = () => {
   const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -111,6 +117,24 @@ const Navbar = () => {
 
   const dispatch = useAppDispatch()
   const totalQuantity = useAppSelector((state) => state.cart.totalQuantity)
+
+  const [textFieldValue, setTextFieldValue] = React.useState('')
+
+  React.useEffect(() => {
+    dispatch(loadLocalStorage())
+  }, [])
+
+  React.useEffect(() => {
+    dispatch(setSearchString(textFieldValue))
+    dispatch(filterProducts())
+  }, [textFieldValue])
+
+  const filterBySearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTextFieldValue(event.target.value)
+    dispatch(setSearchString(textFieldValue))
+    dispatch(filterProducts())
+  }
+
   return (
     <nav>
       <AppBar position="sticky" sx={{ backgroundColor: 'darkblue' }}>
@@ -167,9 +191,11 @@ const Navbar = () => {
                 }}
               >
                 <MenuItem onClick={handleCloseNavMenu}>
-                  <Typography variant="h4" textAlign="center">
-                    Products
-                  </Typography>
+                  <Link to="/">
+                    <Typography variant="h4" textAlign="center">
+                      Products
+                    </Typography>
+                  </Link>
                 </MenuItem>
                 <MenuItem onClick={handleCloseNavMenu}>
                   <Typography variant="h4" textAlign="center">
@@ -206,15 +232,22 @@ const Navbar = () => {
               Bazaaaria
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-              <TabButton onClick={handleCloseNavMenu}>
-                <Typography variant="h5">Products</Typography>
-              </TabButton>
-              <TabButton onClick={handleCloseNavMenu}>
-                <Typography variant="h5">By Category</Typography>
-              </TabButton>
-              <TabButton onClick={handleCloseNavMenu}>
-                <Typography variant="h5">Latest</Typography>
-              </TabButton>
+              <Link to="/">
+                <TabButton onClick={handleCloseNavMenu}>
+                  <Typography variant="h5">Products</Typography>
+                </TabButton>
+              </Link>
+
+              <Link to="/categories">
+                <TabButton onClick={handleCloseNavMenu}>
+                  <Typography variant="h5">By Category</Typography>
+                </TabButton>
+              </Link>
+              <Link to="/latest">
+                <TabButton onClick={handleCloseNavMenu}>
+                  <Typography variant="h5">Latest</Typography>
+                </TabButton>
+              </Link>
 
               <Search>
                 <SearchIconWrapper>
@@ -223,6 +256,12 @@ const Navbar = () => {
                 <StyledInputBase
                   placeholder="Search…"
                   inputProps={{ 'aria-label': 'search' }}
+                  // value={textFieldValue}
+                  value={textFieldValue}
+                  autoFocus
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    filterBySearch(e)
+                  }}
                 />
               </Search>
             </Box>
@@ -271,6 +310,11 @@ const Navbar = () => {
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
+              value={textFieldValue}
+              autoFocus
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                filterBySearch(e)
+              }}
             />
           </Search>
         </Box>

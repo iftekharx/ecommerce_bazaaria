@@ -3,18 +3,39 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { Product } from '../../intefaces/Product'
 
+const productsLoadedString = localStorage.getItem('products')
+const totalQuantityString = localStorage.getItem('totalQuantity')
+const totalPriceString = localStorage.getItem('totalPrice')
+
+const productsLoaded: Product[] = productsLoadedString
+  ? JSON.parse(productsLoadedString)
+  : []
+const totalQuantityLoaded: number = totalQuantityString
+  ? JSON.parse(totalQuantityString)
+  : 0
+const totalPriceLoaded: number = totalPriceString
+  ? JSON.parse(totalPriceString)
+  : 0
+
 const initialState = {
-  products: [] as Product[],
-  totalQuantity: 0,
+  products: productsLoaded,
+  totalQuantity: totalQuantityLoaded,
   discountedTotal: 0,
   currentProductId: 0,
-  totalPrice: 0,
+  totalPrice: totalPriceLoaded,
 }
 
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
+    loadLocalStorage: (state) => {
+      const productsLoadedString = localStorage.getItem('products')
+      const productsLoaded: Product[] = productsLoadedString
+        ? JSON.parse(productsLoadedString)
+        : []
+      state.products = productsLoaded
+    },
     clearProducts: (state) => {
       state.products = []
     },
@@ -26,6 +47,9 @@ const cartSlice = createSlice({
       console.log(action.payload.id)
       state.currentProductId = action.payload.id
       cartSlice.caseReducers.calculateTotals(state)
+      localStorage.setItem('products', JSON.stringify(state.products))
+      localStorage.setItem('totalQuantity', JSON.stringify(state.totalQuantity))
+      localStorage.setItem('totalPrice', JSON.stringify(state.totalPrice))
     },
 
     calculateTotals: (state) => {
@@ -67,15 +91,24 @@ const cartSlice = createSlice({
       } else {
         state.products.push({ ...action.payload, quantity: 1 })
       }
-      console.log('added')
+      // console.log('added')
       // console.log(state.products)
       cartSlice.caseReducers.calculateTotals(state)
+      localStorage.clear()
+      localStorage.setItem('products', JSON.stringify(state.products))
+      localStorage.setItem('totalQuantity', JSON.stringify(state.totalQuantity))
+      localStorage.setItem('totalPrice', JSON.stringify(state.totalPrice))
     },
   },
 })
 
 // console.log(cartSlice);
-export const { clearProducts, removeProduct, calculateTotals, addProduct } =
-  cartSlice.actions
+export const {
+  clearProducts,
+  loadLocalStorage,
+  removeProduct,
+  calculateTotals,
+  addProduct,
+} = cartSlice.actions
 
 export default cartSlice.reducer

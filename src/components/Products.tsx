@@ -22,6 +22,7 @@ import AddIcon from '@mui/icons-material/Add'
 import RemoveIcon from '@mui/icons-material/Remove'
 import { addProduct, calculateTotals } from '../features/cart/cartSlice'
 import { Product } from '../intefaces/Product'
+import CircularProgress from '@mui/material/CircularProgress'
 const Products = () => {
   const dispatch = useAppDispatch()
   const products = useAppSelector((state) => state.product.products)
@@ -98,9 +99,11 @@ const Products = () => {
       </Grid>
     </div>
   ) : (
-    <Typography variant="h3" sx={{ textAlign: 'center' }}>
-      Loading . . .{' '}
-    </Typography>
+    <Box
+      sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+    >
+      <CircularProgress size={'200px'} sx={{ marginTop: '20px' }} />
+    </Box>
   )
 }
 

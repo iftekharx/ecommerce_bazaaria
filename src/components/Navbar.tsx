@@ -198,14 +198,11 @@ const Navbar = () => {
                   </Link>
                 </MenuItem>
                 <MenuItem onClick={handleCloseNavMenu}>
-                  <Typography variant="h4" textAlign="center">
-                    By Category
-                  </Typography>
-                </MenuItem>
-                <MenuItem onClick={handleCloseNavMenu}>
-                  <Typography variant="h4" textAlign="center">
-                    Latest
-                  </Typography>
+                  <Link to="/categories">
+                    <Typography variant="h4" textAlign="center">
+                      By Category
+                    </Typography>
+                  </Link>
                 </MenuItem>
               </Menu>
             </Box>
@@ -241,11 +238,6 @@ const Navbar = () => {
               <Link to="/categories">
                 <TabButton onClick={handleCloseNavMenu}>
                   <Typography variant="h5">By Category</Typography>
-                </TabButton>
-              </Link>
-              <Link to="/latest">
-                <TabButton onClick={handleCloseNavMenu}>
-                  <Typography variant="h5">Latest</Typography>
                 </TabButton>
               </Link>
 

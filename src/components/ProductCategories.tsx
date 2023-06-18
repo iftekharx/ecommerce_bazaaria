@@ -22,7 +22,11 @@ import AddIcon from '@mui/icons-material/Add'
 import RemoveIcon from '@mui/icons-material/Remove'
 import { addProduct, calculateTotals } from '../features/cart/cartSlice'
 import { Product } from '../intefaces/Product'
-import { loadCategories } from '../features/product/productSlice'
+import {
+  loadCategories,
+  setCurrentProduct,
+} from '../features/product/productSlice'
+import { Link } from 'react-router-dom'
 
 const ProductCategories = () => {
   const dispatch = useAppDispatch()
@@ -95,7 +99,15 @@ const ProductCategories = () => {
                     <AddIcon color="success" />
                   </IconButton>
 
-                  <Button>View Details</Button>
+                  <Link to={'/product'}>
+                    <Button
+                      onClick={() => {
+                        dispatch(setCurrentProduct(product))
+                      }}
+                    >
+                      View Details
+                    </Button>
+                  </Link>
                 </CardActions>
               </Card>
             </Grid>

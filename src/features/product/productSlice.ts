@@ -7,7 +7,7 @@ const url = 'https://dummyjson.com/products'
 
 const initialState = {
   products: [] as Product[],
-  currentProduct: {},
+  currentProduct: {} as Product,
   total: 0,
   skip: 0,
   limit: 100,
@@ -108,6 +108,7 @@ export const {
   filterProducts,
   loadCategories,
   setSearchString,
+  setCurrentProduct,
   setMainCategory,
 } = productSlice.actions
 

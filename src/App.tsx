@@ -9,6 +9,7 @@ import { getProducts } from './features/product/productSlice'
 import { useAppDispatch, useAppSelector } from './components/hooks/hooks'
 import Cart from './components/Cart'
 import Categories from './components/Categories'
+import ProductDetail from './components/ProductDetail'
 
 function App() {
   const dispatch = useAppDispatch()
@@ -25,6 +26,7 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<Products />} />
+          <Route path="/product" element={<ProductDetail />} />
 
           <Route path="/cart" element={<Cart />} />
           <Route path="/categories" element={<Categories />} />

@@ -25,12 +25,13 @@ import { Product } from '../intefaces/Product'
 const Products = () => {
   const dispatch = useAppDispatch()
   const products = useAppSelector((state) => state.product.products)
+  const isLoading = useAppSelector((state) => state.product.isLoading)
 
   const addProductToCart = (product: Product) => {
     dispatch(addProduct(product))
   }
 
-  return (
+  return !isLoading ? (
     <div>
       <Grid container padding={10} spacing={10}>
         {products.map((product, index) => (
@@ -96,6 +97,10 @@ const Products = () => {
         ))}
       </Grid>
     </div>
+  ) : (
+    <Typography variant="h3" sx={{ textAlign: 'center' }}>
+      Loading . . .{' '}
+    </Typography>
   )
 }
 

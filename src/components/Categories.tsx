@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from './hooks/hooks'
 import { loadCategories } from '../features/product/productSlice'
 import { setMainCategory } from '../features/product/productSlice'
 import ProductCategories from './ProductCategories'
+import { Typography } from '@mui/material'
 const Categories = () => {
   const [category, setCategory] = React.useState<string>('smartphones')
   const categories = useAppSelector((state) => state.product.categories)
@@ -40,13 +41,16 @@ const Categories = () => {
           id="demo-simple-select"
           value={category}
           label="Category"
+          sx={{ textAlign: 'center' }}
           onChange={(e) => {
             handleChange(e)
           }}
         >
           {categories.map((cat: string, index) => (
             <MenuItem key={index} value={cat}>
-              {cat}
+              <Typography variant="h5" sx={{ textAlign: 'center' }}>
+                {cat}
+              </Typography>
             </MenuItem>
           ))}
         </Select>

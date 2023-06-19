@@ -25,6 +25,8 @@ import { Product } from '../intefaces/Product'
 import CircularProgress from '@mui/material/CircularProgress'
 import { setCurrentProduct } from '../features/product/productSlice'
 import { Link } from 'react-router-dom'
+import { useEffect } from 'react'
+import { getProducts } from '../features/product/productSlice'
 const Products = () => {
   const dispatch = useAppDispatch()
   const products = useAppSelector((state) => state.product.products)
@@ -34,6 +36,9 @@ const Products = () => {
   const addProductToCart = (product: Product) => {
     dispatch(addProduct(product))
   }
+  useEffect(() => {
+    dispatch(getProducts())
+  }, [])
 
   return !isLoading ? (
     <div>

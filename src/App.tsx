@@ -12,12 +12,6 @@ import Categories from './components/Categories'
 import ProductDetail from './components/ProductDetail'
 
 function App() {
-  const dispatch = useAppDispatch()
-
-  useEffect(() => {
-    dispatch(getProducts())
-  }, [])
-
   return (
     <>
       <header>

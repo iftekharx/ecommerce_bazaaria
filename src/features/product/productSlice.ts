@@ -16,6 +16,7 @@ const initialState = {
   category: '',
   categories: [] as string[],
   searchString: '',
+  currentUser: '',
 }
 
 export const getProducts = createAsyncThunk(
@@ -51,6 +52,9 @@ const productSlice = createSlice({
 
     setSearchString: (state, action) => {
       state.searchString = action.payload
+    },
+    setCurrentUser: (state, action) => {
+      state.currentUser = action.payload
     },
 
     setMainCategory: (state, action) => {
@@ -110,6 +114,7 @@ export const {
   setSearchString,
   setCurrentProduct,
   setMainCategory,
+  setCurrentUser,
 } = productSlice.actions
 
 export default productSlice.reducer

@@ -18,6 +18,7 @@ const Cart = () => {
   const products = useAppSelector((state) => state.cart.products)
   const totalPrice = useAppSelector((state) => state.cart.totalPrice)
   const totalQuantity = useAppSelector((state) => state.cart.totalQuantity)
+  const user = useAppSelector((state) => state.product.currentUser)
 
   const theme = createTheme()
 
@@ -45,7 +46,7 @@ const Cart = () => {
     },
   }
 
-  return (
+  const output = user ? (
     <Box sx={{ padding: '20px', marginRight: '20px' }}>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -180,7 +181,13 @@ const Cart = () => {
         </Table>
       </TableContainer>
     </Box>
+  ) : (
+    <Typography variant="h3" textAlign={'center'}>
+      You must log in to view cart
+    </Typography>
   )
+
+  return output
 }
 
 export default Cart

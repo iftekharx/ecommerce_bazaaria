@@ -27,7 +27,9 @@ import { setCurrentProduct } from '../features/product/productSlice'
 import { Link } from 'react-router-dom'
 import { useEffect } from 'react'
 import { getProducts } from '../features/product/productSlice'
+
 const Products = () => {
+  const user = useAppSelector((state) => state.product.currentUser)
   const dispatch = useAppDispatch()
   const products = useAppSelector((state) => state.product.products)
   const filteredProd = useAppSelector((state) => state.product.filterProducts)
@@ -39,8 +41,7 @@ const Products = () => {
   useEffect(() => {
     dispatch(getProducts())
   }, [])
-
-  return !isLoading ? (
+  return !isLoading && user ? (
     <div>
       <Grid container padding={10} spacing={10}>
         {filteredProd.map((product, index) => (
@@ -113,6 +114,12 @@ const Products = () => {
         ))}
       </Grid>
     </div>
+  ) : !user ? (
+    <Box
+      sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+    >
+      <Typography variant="h3">You must log in</Typography>{' '}
+    </Box>
   ) : (
     <Box
       sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}

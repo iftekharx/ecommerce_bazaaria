@@ -10,6 +10,8 @@ import { setMainCategory } from '../features/product/productSlice'
 import ProductCategories from './ProductCategories'
 import { Typography } from '@mui/material'
 const Categories = () => {
+  const user = useAppSelector((state) => state.product.currentUser)
+
   const [category, setCategory] = React.useState<string>('smartphones')
   const categories = useAppSelector((state) => state.product.categories)
   const dispatch = useAppDispatch()
@@ -32,7 +34,7 @@ const Categories = () => {
     dispatch(loadCategories())
   }, [category])
 
-  return (
+  const output = user ? (
     <Box sx={{ minWidth: 120, marginTop: '20px' }}>
       <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Categories</InputLabel>
@@ -57,7 +59,13 @@ const Categories = () => {
       </FormControl>
       <ProductCategories />
     </Box>
+  ) : (
+    <Typography variant="h3">
+      You must log in to view product categories
+    </Typography>
   )
+
+  return output
 }
 
 export default Categories

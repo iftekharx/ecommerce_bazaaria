@@ -21,12 +21,17 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import { useAppDispatch, useAppSelector } from './hooks/hooks'
 import Badge from '@mui/material/Badge'
 import MailIcon from '@mui/icons-material/Mail'
-import { Link } from 'react-router-dom'
-import { filterProducts } from '../features/product/productSlice'
+import { Link, useNavigate } from 'react-router-dom'
+import {
+  filterProducts,
+  setCurrentUser,
+} from '../features/product/productSlice'
 import { setSearchString } from '../features/product/productSlice'
 import { text } from 'stream/consumers'
 import { loadLocalStorage } from '../features/cart/cartSlice'
-
+import { blue } from '@mui/material/colors'
+import { getAuth, signOut, onAuthStateChanged, User } from 'firebase/auth'
+import { useDispatch } from 'react-redux'
 const Navbar = () => {
   const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -43,7 +48,7 @@ const Navbar = () => {
     },
     [theme.breakpoints.up('md')]: {
       padding: '9px',
-      marginLeft: '20%',
+      marginLeft: '5%',
       marginTop: '20px',
       marginBottom: '20px',
       width: '30%',
@@ -107,6 +112,13 @@ const Navbar = () => {
     setAnchorElUser(event.currentTarget)
   }
 
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
   const handleCloseNavMenu = () => {
     setAnchorElNav(null)
   }
@@ -120,6 +132,7 @@ const Navbar = () => {
 
   const [textFieldValue, setTextFieldValue] = React.useState('')
 
+  const navigator = useNavigate()
   React.useEffect(() => {
     dispatch(loadLocalStorage())
   }, [])
@@ -133,6 +146,46 @@ const Navbar = () => {
     setTextFieldValue(event.target.value)
     dispatch(setSearchString(textFieldValue))
     dispatch(filterProducts())
+  }
+  const auth = getAuth()
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false)
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(
+    isLoggedIn ? null : null
+  )
+  const open = Boolean(anchorEl)
+  const [user, setUser] = React.useState<User | null>(null)
+
+  React.useEffect(() => {
+    // Listen for changes in authentication state
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is logged in
+        setIsLoggedIn(true)
+        setUser(user)
+        dispatch(setCurrentUser(user))
+      } else {
+        // User is logged out
+        setIsLoggedIn(false)
+        setUser(null)
+      }
+    })
+
+    // Clean up the listener on unmount
+    return () => {
+      unsubscribe()
+    }
+  }, [])
+
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        // Logout successful
+        setIsLoggedIn(false)
+        setUser(null)
+      })
+      .catch((error) => {
+        // An error happened
+      })
   }
 
   return (
@@ -191,7 +244,7 @@ const Navbar = () => {
                 }}
               >
                 <MenuItem onClick={handleCloseNavMenu}>
-                  <Link to="/">
+                  <Link to="/products">
                     <Typography variant="h4" textAlign="center">
                       Products
                     </Typography>
@@ -229,7 +282,7 @@ const Navbar = () => {
               Bazaaaria
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-              <Link to="/">
+              <Link to="/products">
                 <TabButton onClick={handleCloseNavMenu}>
                   <Typography variant="h5">Products</Typography>
                 </TabButton>
@@ -261,7 +314,10 @@ const Navbar = () => {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Cart">
                 <IconButton onClick={() => {}} sx={{ p: 0 }}>
-                  <Badge badgeContent={totalQuantity} color="success">
+                  <Badge
+                    badgeContent={user ? totalQuantity : 0}
+                    color="success"
+                  >
                     <Link to="/cart">
                       <ShoppingCartIcon
                         fontSize="large"
@@ -271,26 +327,56 @@ const Navbar = () => {
                   </Badge>
                 </IconButton>
               </Tooltip>
-              <Menu
-                sx={{ mt: '45px' }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
+            </Box>
+            <Box sx={{ flexGrow: 2 }}>
+              <Button
+                id="basic-button"
+                aria-controls={open ? 'basic-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick}
+                sx={{ color: 'white' }}
               >
-                <MenuItem onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">...</Typography>
-                </MenuItem>
-              </Menu>
+                {user ? (
+                  <>
+                    <Typography>{user?.email}</Typography>
+                  </>
+                ) : (
+                  <Link to="/">
+                    <Typography sx={{ color: 'white' }}>
+                      Not Logged In
+                    </Typography>
+                  </Link>
+                )}
+              </Button>
+
+              {user ? (
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                  }}
+                >
+                  <MenuItem onClick={handleClose}>Profile</MenuItem>
+                  <MenuItem onClick={handleClose}>My account</MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      handleLogout()
+
+                      handleClose()
+                      dispatch(setCurrentUser(null))
+                      navigator('/')
+                    }}
+                  >
+                    Logout
+                  </MenuItem>
+                </Menu>
+              ) : (
+                ''
+              )}
             </Box>
           </Toolbar>
         </Container>

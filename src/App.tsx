@@ -10,6 +10,11 @@ import { useAppDispatch, useAppSelector } from './components/hooks/hooks'
 import Cart from './components/Cart'
 import Categories from './components/Categories'
 import ProductDetail from './components/ProductDetail'
+import { initializeApp } from 'firebase/app'
+import { config } from './config/firebase'
+import Login from './components/Login'
+import Signup from './components/Signup'
+import ErrorPage from './components/ErrorPage'
 
 function App() {
   return (
@@ -19,11 +24,14 @@ function App() {
       </header>
       <main>
         <Routes>
-          <Route path="/" element={<Products />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/products" element={<Products />} />
           <Route path="/product" element={<ProductDetail />} />
 
           <Route path="/cart" element={<Cart />} />
           <Route path="/categories" element={<Categories />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="*" element={<ErrorPage />} />
         </Routes>
       </main>
 
